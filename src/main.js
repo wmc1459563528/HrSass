@@ -37,6 +37,10 @@ import '@/permission'
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
 
+// 将 http方法, 挂载到原型上
+import http from './utils/request'
+Vue.prototype.$http = http
+
 // 11. 查看当前项目运行的环境
 // console.log(process.env.NODE_ENV) // development
 

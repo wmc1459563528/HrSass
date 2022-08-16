@@ -11,10 +11,10 @@ export function isExternal(path) {
 }
 
 /**
- * @param {string} str
- * @returns {Boolean}
+ * 校验用户输入的手机号码
+ * @param {*} str 手机号码
+ * @returns
  */
-export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+export function validMobile(str) {
+  return /^1[3-9]\d{9}$/.test(str)
 }

@@ -35,6 +35,40 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    // 配置反向代理
+    /*
+      1) /api 是一个标记
+      一旦我们配置了代理服务器, 在页面中去发起网络请求
+      一旦发现请求地址中包含/api, 该请求就会走代理服务器
+      在后边, 如果希望请求走代理服务器, 就可以在请求地址中包含/api
+      http://localhost:8888/api/sys/login ==走代理服务器转发==>
+      http://ihrm-java.itheima.net/api/sys/login
+      2) pathRewrite: { '^/api': '' }
+      工作中, 可能公司的项目的接口地址中是不包含/api
+      比如: http://www.jd.com/user/login, 但是, 我们用了/api做标记
+      http://localhost:8888/api/user/login ==走代理服务器转发==>
+      http://www.jd.com/api/user/login 转发的路径中多了一个/api,
+      通过路径重写把/api去掉 ===> http://www.jd.com/user/login
+
+      3) 如果要配置多个代理服务器
+       proxy: {
+        '/api': {
+          target: 'http://ihrm-java.itheima.net'
+          // pathRewrite: { '^/api': '' }
+        },
+        '/cbd': {
+          target: 'http://www.jd.com',
+          pathRewrite: { '^/cbd': '' }
+        }
+      }
+    */
+    // 代理服务器
+    proxy: {
+      '/api': {
+        target: 'http://ihrm-java.itheima.net'
+        // pathRewrite: { '^/api': '' }
+      }
     }
   },
   configureWebpack: {
