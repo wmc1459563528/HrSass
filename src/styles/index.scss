@@ -3,7 +3,9 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+// 引入新放入的common.scss
 @import './common.scss';
+
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;

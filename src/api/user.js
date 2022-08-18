@@ -1,24 +1,15 @@
-import request from '@/utils/request'
+import http from '@/utils/request'
 
-export function login(data) {
-  return request({
-    url: '/vue-admin-template/user/login',
+/**
+ * 登录接口函数
+ * @param {*} data {mobile: 'xxx', password: 'xxxxx'}
+ * @returns
+ */
+export function reqLogin(data) {
+  return http({
+    // url: 'http://localhost:8889/api/sys/login',
+    url: '/sys/login',
     method: 'post',
     data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
   })
 }

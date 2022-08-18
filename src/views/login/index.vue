@@ -15,7 +15,7 @@
           <img src="@/assets/common/login-logo.png" alt="">
         </h3>
       </div>
-      <!-- 账户名 -->
+      <!-- 手机号 -->
       <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -23,7 +23,7 @@
         <el-input
           ref="mobile"
           v-model="loginForm.mobile"
-          placeholder="请输入手机号"
+          placeholder="请输入手机号码"
           name="mobile"
           type="text"
           tabindex="1"
@@ -72,11 +72,12 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
+// import { reqLogin } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
-    // 自定义校验-用户名
+    // 自定义校验-手机号
     const validateMobile = (rule, value, callback) => {
       if (!validMobile(value)) {
         callback(new Error('请输入正确的手机号'))
@@ -92,18 +93,19 @@ export default {
       },
       // 2. 校验规则对象
       loginRules: {
-        // 2.1 手机号
+        // 2.1 手机号码
         mobile: [
           // 非空校验
           { required: true, message: '手机号不能为空', trigger: ['change', 'blur'] },
           // 自定义校验
-          { validator: validateMobile, message: '请输入正确的手机号码', trigger: ['change', 'blur'] }
+          { validator: validateMobile, trigger: ['change', 'blur'] }
         ],
+        // 2.2 密码
         password: [
           // 非空校验
           { required: true, message: '密码不能为空', trigger: ['change', 'blur'] },
-          // 自定义校验
-          { min: 6, max: 16, message: '密码长度为6-16位之间', trigger: ['change', 'blur'] }
+          // 长度校验校验
+          { min: 6, max: 16, message: '密码长度在6-16位之间', trigger: ['change', 'blur'] }
         ]
       },
       loading: false,
@@ -139,20 +141,45 @@ export default {
         if (!flag) return
         // 方式一:
         // 2.2 通过了校验
-        /*  this.$http.post('http://ihrm-java.itheima.net/api/sys/login', this.loginForm).then((res) => {
-          console.log(res)
-        }).catch((error) => {
-          console.log(error)
-        }) */
-        // 方式二：
-        this.$http.post('http://localhost:8888/api/sys/login', this.loginForm).then((res) => {
-          this.$message.success('登录成功')
-          console.log(res)
-        }).catch((error) => {
-          this.$message.error('登录失败')
+        // this.$http.post('http://ihrm-java.itheima.net/api/sys/login', this.loginForm)
+        //   .then((res) => {
+        //     console.log(res)
+        //   }).catch((error) => {
+        //     console.log(error)
+        //   })
 
-          console.log(error)
-        })
+        // 测试代理服务器
+        // this.$http.post('http://localhost:8889/api/sys/login', this.loginForm)
+        //   .then((res) => {
+        //     console.log(res)
+        //   }).catch((error) => {
+        //     console.log(error)
+        //   })
+
+        // 方式二:
+        // reqLogin(this.loginForm).then((res) => {
+        //   console.log(res)
+        // }).catch((error) => {
+        //   console.log(error)
+        // })
+
+        // 方式三(终极方案):
+        // 向仓库派发一个异步任务(login函数)
+        this.$store.dispatch('user/login', this.loginForm)
+          .then(() => {
+            this.loading = true
+            this.$message.success('登录成功~')
+            this.$router.push('/')
+          })
+          .catch(() => {
+            this.loading = true
+          })
+          .finally(() => {
+            // 无论失败还是成功都会触发
+            setTimeout(() => {
+              this.loading = false
+            }, 1000)
+          })
       })
     }
   }

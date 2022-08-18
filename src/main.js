@@ -37,12 +37,9 @@ import '@/permission'
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
 
-// 将 http方法, 挂载到原型上
-import http from './utils/request'
-Vue.prototype.$http = http
-
-// 11. 查看当前项目运行的环境
-// console.log(process.env.NODE_ENV) // development
+// 11. 往原型对象上绑定全局方法
+// import http from './utils/request'
+// Vue.prototype.$http = http
 
 // 将App.vue根组件转换成DOM元素渲染到指定的挂载点(灰常重要)
 new Vue({
@@ -50,19 +47,4 @@ new Vue({
   router,
   store,
   render: h => h(App)
-  // =======
-  // render: function(createElement) {
-  //   return createElement(App)
-  // }
-  // 简写 ======
-  // render(createElement) {
-  //   return createElement(App)
-  // }
-  // 再次简写 =====
-  // render(h) {
-  //   return h(App)
-  // }
-  // 最终简写 =====
-  // render: h => h(App)
-
 })

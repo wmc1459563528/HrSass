@@ -18,6 +18,48 @@
         - 访问的是登录页, 或者404页面,直接放行
         - 访问是其它页面, 拦截去登录页面
 */
+// 1. 引入
+import router from '@/router'
+import store from '@/store'
+// 引入进度条插件
+import NProgress from 'nprogress' // 引入进度条对象
+// 如果要重写进度条样式, 可以复制一份独立修改, 尽量不要在源文件上修改
+import '@/styles/NProgress.scss' // 引入进度条样式
+const whiteList = ['/login', '/404']
+// 2. 配置路由全局前置守卫
+router.beforeEach((to, from, next) => {
+  // 开启进入条效果
+  NProgress.start()
+  if (store.getters.token) {
+    // 有身份 & 去登录页
+    if (to.path === '/login') {
+      next('/')// 拦截去主页面
+      // 结束进度条
+      NProgress.done()
+    } else {
+      // 有身份 & 去其它页面
+      next()// 直接放行
+    }
+  } else {
+    // 没有身份
+    if (whiteList.indexOf(to.path) !== -1) {
+      // 去白名单中路径对应的页面
+      next()
+    } else {
+      // 结束进度条
+      NProgress.done()
+      // 去白名单中路径对应以外的页面
+      next('/login')
+    }
+  }
+})
+// 3. 配置路由全局后置守卫
+router.afterEach((to, from) => {
+  setTimeout(() => {
+    // 结束进度条
+    NProgress.done()
+  }, 1000)
+})
 // import router from './router'
 // import store from './store'
 // import { Message } from 'element-ui'

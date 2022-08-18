@@ -2,37 +2,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-/* ---------------------之前使用路由的方式---------------
-import VueRouter from 'vue-router'
-import Vue from 'vue'
-
-Vue.use(VueRouter)
- */
-/* 1) 常规写法 --- 静态引入(直接加载)
-import Login from '@/views/login/index.vue'
-const router = new VueRouter({
-  routes: [
-    { path: '/login', component: Login }
-  ]
-})
-export default router */
-
-/* 2) 高频写法(推荐) --- 动态引入(路由懒加载)
-const router = new VueRouter({
-  routes: [
-    { path: '/login', component: () => import('@/views/login/index.vue') }
-  ]
-})
-export default router */
-/**
- 1) 注意点: 静态引入 和 动态引入 都会有缓存
-     - 只要页面组件有被引入一次, 后边都是直接去读取缓存数据
- 2) 静态引入 和 动态引入 的选择问题
-     - 如果当前的页面组件不是在首屏渲染时要立马展示, 都统一采用动态引入形式
-     - 如果当前的页面组件在首屏渲染时要立马展示, 可以采用静态引入
-     - 一般LayOut页面组件采用静态引入
- */
-
 // 2. 全局注册
 Vue.use(Router)
 
@@ -88,3 +57,34 @@ export function resetRouter() {
 // 7. 导出路由对象
 export default router
 
+// ---------------------之前使用路由的方式---------------
+// import VueRouter from 'vue-router'
+// import Vue from 'vue'
+
+// Vue.use(VueRouter)
+
+// 1) 常规写法 --- 静态引入(直接加载)
+// import Login from '@/views/login/index.vue'
+// const router = new VueRouter({
+//   routes: [
+//     { path: '/login', component: Login }
+//   ]
+// })
+// export default router
+
+// 2) 高频写法(推荐) --- 动态引入(路由懒加载)
+// const router = new VueRouter({
+//   routes: [
+//     { path: '/login', component: () => import ('@/views/login/index.vue') }
+//   ]
+// })
+// export default router
+
+/**
+ 1) 注意点: 静态引入 和 动态引入 都会有缓存
+     - 只要页面组件有被引入一次, 后边都是直接去读取缓存数据
+ 2) 静态引入 和 动态引入 的选择问题
+     - 如果当前的页面组件不是在首屏渲染时要立马展示, 都统一采用动态引入形式
+     - 如果当前的页面组件在首屏渲染时要立马展示, 可以采用静态引入
+     - 一般LayOut页面组件采用静态引入
+ */
