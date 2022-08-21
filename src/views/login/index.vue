@@ -176,9 +176,7 @@ export default {
           })
           .finally(() => {
             // 无论失败还是成功都会触发
-            setTimeout(() => {
-              this.loading = false
-            }, 1000)
+            this.loading = false
           })
       })
     }

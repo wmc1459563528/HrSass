@@ -1,7 +1,8 @@
 // 1. 引入
 import axios from 'axios'
 import { Message } from 'element-ui'
-
+import store from '@/store'
+import router from '@/router'
 // 2. 创建了一个axios实例对象
 const http = axios.create({
   // 2.1 从环境变量中去取接口的基地址(手动转自动)
@@ -15,6 +16,11 @@ const http = axios.create({
 // 在请求发出去之前, 做一些公共的配置, 比如: 携带token
 http.interceptors.request.use(
   config => {
+    // 发送请求时携带token
+    console.log(store.getters.token)
+    if (store.getters.token) {
+      config.headers.Authorization = `Bearer ${store.getters.token}`
+    }
     return config
   },
   error => {
@@ -43,8 +49,16 @@ http.interceptors.response.use(
     // 处理4XX，5XX的错误
     // console.dir(error)
     if (error.response) {
-      // Message.error(error.message)
-      Message.error(error.response.data.message)
+      // 处理token过期
+      if (error.response.status === 401 && error.response.data.code === 10002) {
+        // 向仓库派发任务 清除本地token和登录信息
+        store.dispatch('user/loginOut')
+        Message.error('登录信息已过期,请您重新登录')
+        router.push('/login')
+      } else {
+        // Message.error(error.message)
+        Message.error(error.response.data.message)
+      }
     } else {
       Message.error(error.message)
     }

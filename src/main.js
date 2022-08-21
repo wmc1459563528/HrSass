@@ -41,6 +41,30 @@ Vue.use(ElementUI)
 // import http from './utils/request'
 // Vue.prototype.$http = http
 
+// 11. 自定义全局指令
+// 第一种方式
+// import '@/directives'
+
+// 第二种方式
+/* import { imgerror, color } from '@/directives/index'
+Vue.directive('imgerror', imgerror)
+Vue.directive('color', color)
+ */
+// 改进1: -----批量导入--------
+import * as directives from '@/directives/index'
+// for (const key in directives) {
+//   Vue.directive(key, directives[key])
+// }
+// todo 改进2: -----批量导入--------
+Object.keys(directives).forEach(item => {
+  Vue.directive(item, directives[item])
+})
+/*
+  todo 在项目开发过程中, 遍历优先选数组, 选择对象次之
+  - 原因1: 数组是有序的, 对象是无序的
+  - 原因2: 数组有更多的内置方法, 对象相对较少
+  todo 第二种写法的可扩展性会更强
+*/
 // 将App.vue根组件转换成DOM元素渲染到指定的挂载点(灰常重要)
 new Vue({
   el: '#app',

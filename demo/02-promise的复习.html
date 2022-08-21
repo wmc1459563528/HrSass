@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+    <script>
+       /*
+         1. promise是什么?
+            - promise是一个容器对象, 内部封装了一个异步操作
+            - 在将来会给出一个结果, 这个结果可能成功, 也有可能失败
+
+         2. promise解决了什么问题?
+            - 在之前开发过程中, 一些异步的操作都是通过回调函数来完成
+            - 多个异步操作会形成回调函数嵌套回调函数的现象
+            - 最终会形成回调地狱, 造成我们写的代码变得非常难以维护
+            - promise就是用链式调用的方式去解决了回调函数造成回调地狱的问题
+
+         3. promise怎么用? 
+            - promise内部有三种状态: pending, fulfilled, rejected
+              - 默认状态就是:  pending
+              - promise的状态是不可逆的: pending --> fulfilled, pending --> rejected
+ 
+            - 如何定义?
+              const p = new Promise((resolve, reject)=>{
+                  // 内部封装了一个异步操作, 将来会给出一个结果
+                  // resolve()函数, 对外给出一个成功的结果, 此时, 内部的状态: pending --> fulfilled
+                  // reject()函数, 对外给出一个失败的结果, 此时, 内部的状态: pending --> rejected
+              })
+             
+            - 如何使用?
+            p.then(()=>{
+               // 接收resolve()函数返回的结果
+            }).catch(()=>{
+               // 接收reject()函数返回的结果
+            })  
+              
+       */
+
+      // 需求1：开一个延时器 setTimeout，在延迟器结束后(2s)， 做某件事： alert 一个延时器结束了
+      // 需求2：要做的事情，不希望写死，第一次 alert 一个zs， 第二次 console 一个ls
+      // 需求3：希望是等待做完第一件事情之后，再等待做第二件事
+
+      // 1. 先用回调函数方式实现
+      /*
+      function fn(callback){
+         setTimeout(()=>{
+            // 健壮性考虑
+            callback && callback()
+         }, 2000)
+      }
+
+      // 第一件事: 打印输出张三
+      fn(()=>{
+        console.log('张三')
+        // 第二件事: 打印输出李四
+        fn(()=>{
+           console.log('李四')
+           // 第三件事: 打印输出王五
+           fn(()=>{
+              console.log('王五')
+           })
+        })
+      })
+      */
+
+      // 需求1：开一个延时器 setTimeout，在延迟器结束后(2s)， 做某件事： alert 一个延时器结束了
+      // 需求2：要做的事情，不希望写死，第一次 alert 一个zs， 第二次 console 一个ls
+      // 需求3：希望是等待做完第一件事情之后，再等待做第二件事
+    
+      // 2. 用promise的方式实现
+      // function fn() {
+      //    return new Promise((resolve, reject)=>{
+      //        // 内部封装了一个异步操作
+      //        setTimeout(()=>{
+      //            resolve()
+      //        }, 2000)
+      //    })
+      // }
+
+      // fn().then(()=>{
+      //     // 第一件事情
+      //     console.log('张三')
+      //     return fn()
+      // }).then(()=>{
+      //    // 第二件事情
+      //    console.log('李四') 
+      //    return fn()
+      // }).then(()=>{
+      //    // 第三件事情
+      //    console.log('王五')
+      // }).catch(()=>{
+      //    // 统一处理错误
+      // })
+
+      // ---------改进方案: async 和 await --------------
+      // async 和 await 本质上还是promise, 在语法上显得更加直观
+      // 思想: 用同步的思维去执行异步的操作
+      // function fn() {
+      //    return new Promise((resolve, reject)=>{
+      //        // 内部封装了一个异步操作
+      //        setTimeout(()=>{
+      //            resolve()
+      //        }, 2000)
+      //    })
+      // }
+
+      // async function test(){
+      //      // 第一件事
+      //      await fn()
+      //      console.log('张三')
+
+      //      // 第二件事
+      //      await fn()
+      //      console.log('李四')
+
+      //      // 第三件事
+      //      await fn()
+      //      console.log('王五')
+      // }
+
+      // test()
+
+      // ----------------补充-----------
+      function fn(){
+        return new Promise((resolve, reject)=>{
+            // 内部都是封装一个异步操作
+            setTimeout(()=>{
+              resolve('你成功坚持了2秒')
+            }, 2000)
+        })
+      }
+
+      async function test(){
+         const res =  await fn()
+         // console.log(res) // 直接打印拿到的是具体的一个结果
+         return res // 如果把结果通过return返回给外部, 外部得到的是一个promise对象, 而不是直接的一个结果
+      }
+
+      // test()
+
+      const res = test()
+      // console.log(res)
+      res.then((res)=>{
+         console.log(res)
+      })
+
+    </script>
+</body>
+</html>

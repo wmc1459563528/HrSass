@@ -27,7 +27,7 @@ import NProgress from 'nprogress' // 引入进度条对象
 import '@/styles/NProgress.scss' // 引入进度条样式
 const whiteList = ['/login', '/404']
 // 2. 配置路由全局前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // 开启进入条效果
   NProgress.start()
   if (store.getters.token) {
@@ -36,8 +36,11 @@ router.beforeEach((to, from, next) => {
       next('/')// 拦截去主页面
       // 结束进度条
       NProgress.done()
-    } else {
-      // 有身份 & 去其它页面
+    } else { // 有身份 & 去其它页面
+      if (!store.state.user.userInfo.userId) {
+        const res = await store.dispatch('user/getUserInfo')
+        console.log(res)
+      }
       next()// 直接放行
     }
   } else {
@@ -55,10 +58,8 @@ router.beforeEach((to, from, next) => {
 })
 // 3. 配置路由全局后置守卫
 router.afterEach((to, from) => {
-  setTimeout(() => {
-    // 结束进度条
-    NProgress.done()
-  }, 1000)
+  // 结束进度条
+  NProgress.done()
 })
 // import router from './router'
 // import store from './store'
