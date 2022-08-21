@@ -1,8 +1,11 @@
 <template>
   <div class="dashboard-container">
-    <!-- 1. 获取token -->
-    <div class="dashboard-text">从state中获取: {{ $store.state.user.token }}</div>
-    <div class="dashboard-text">从getters中获取: {{ $store.getters.token }}</div>
+    <div class="app-container">
+      <h2>
+        首页
+        <svg-icon icon-class="dashboard" />
+      </h2>
+    </div>
   </div>
 </template>
 

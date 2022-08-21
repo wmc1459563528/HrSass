@@ -43,7 +43,10 @@ module.exports = {
         // 线上服务器
         // target: 'http://ihrm-java.itheima.net'
         // 本地服务器
-        target: 'http://localhost:3000'
+        // target: 'http://localhost:3000'
+        // 自己的服务器
+        target: 'http://43.142.93.33:3000/'
+
       }
     }
   },

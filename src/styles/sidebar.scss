@@ -88,6 +88,15 @@
               color: #43a7fe;
             }
           }
+          &.is-active {
+            background-color: #fff!important;
+            .svg-icon {
+              color: #43a7fe;
+            }
+            span {
+              color: #43a7fe;
+            }
+          }
         }
       }
     }

@@ -7,14 +7,28 @@ Vue.use(Router)
 
 // 3. 静态引入Layout页面组件(主体架子)
 import Layout from '@/layout'
+// 引入多个模块的规则
+import approvalsRouter from './modules/approvals'
+import departmentsRouter from './modules/departments'
+import employeesRouter from './modules/employees'
+import permissionRouter from './modules/permission'
+import attendancesRouter from './modules/attendances'
+import salarysRouter from './modules/salarys'
+import settingRouter from './modules/setting'
+import socialRouter from './modules/social'
 
-// 4. 按需导出静态路由数组 (写在这个数组内部的路由规则对象是不需要做权限管理的)
-// 加按需导出, 可以方便外部拿到这个静态数组去做一些业务
+// 4. 静态路由规则数组(里面的所有路由对象都不做权限管理)
 export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: true
+    /*
+    如果侧边需要出现导航，则应该满足两个条件
+      - 没有hidden: true,的键值对
+      - 添加一个元信息对象 meta: { title: '首页', icon: 'dashboard' }
+    */
+    hidden: true,
+    meta: { title: '首页', icon: 'dashboard' }
   },
 
   {
@@ -22,7 +36,7 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  // 一级路由 - 首页板块
   {
     path: '/',
     component: Layout,
@@ -31,30 +45,44 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      // 元信息对象：配置一些额外的数据
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
 
   // 当所有的规则都匹配不上, 统一走404(都要放在规则数组的尾部)
   { path: '*', redirect: '/404', hidden: true }
 ]
-
-// 5. 调用函数, 创建一个全局的路由对象
+// 5. 动态路由规则数组(里面的所有路由对象后期都要权限管理)
+export const asyncRoutes = [
+  departmentsRouter,
+  approvalsRouter,
+  employeesRouter,
+  permissionRouter,
+  attendancesRouter,
+  salarysRouter,
+  settingRouter,
+  socialRouter
+]
+// 6. 调用函数, 创建一个全局的路由对象
 const createRouter = () => new Router({
   mode: 'hash', // 配置路由模式
   // 在页面切换时, 进入到新的页面时, 都会滚动到页面的顶部 scorllTop = 0
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes // 路由规则对象数组
+  routes: [
+    ...constantRoutes,
+    ...asyncRoutes
+  ] // 路由规则对象数组
 })
 const router = createRouter()
 
-// 6. 重置路由对象
+// 7. 重置路由对象
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
 
-// 7. 导出路由对象
+// 8. 导出路由对象
 export default router
 
 // ---------------------之前使用路由的方式---------------
