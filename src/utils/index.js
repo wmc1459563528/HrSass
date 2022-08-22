@@ -115,3 +115,28 @@ export function param2Obj(url) {
   })
   return obj
 }
+/**
+ * 把列表数据数组转成树型数组
+ * @param {*} list 列表数据数组
+ * @param {*} pid  标记(要转成的层级)
+ * @returns
+ */
+export function tranListToTreeData(list, pid) {
+  // 1. 定义数组用于装符合条件的
+  const treeArr = []
+  // 2. 遍历列表
+  list.forEach(item => {
+    // 2.1 判断是否符合条件
+    if (item.pid === pid) {
+      // 2.3 根据一级的id去查找符合条件的二级数据
+      const result = tranListToTreeData(list, item.id)
+      if (result.length > 0) {
+        item.children = result
+      }
+      // 2.2 装入数组
+      treeArr.push(item)
+    }
+  })
+  // 3. 返回树数组
+  return treeArr
+}

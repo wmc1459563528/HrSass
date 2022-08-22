@@ -17,14 +17,14 @@ const http = axios.create({
 http.interceptors.request.use(
   config => {
     // 发送请求时携带token
-    console.log(store.getters.token)
+    // console.log(store.getters.token)
     if (store.getters.token) {
       config.headers.Authorization = `Bearer ${store.getters.token}`
     }
     return config
   },
   error => {
-    console.log(error)
+    // console.log(error)
     return Promise.reject(error)
   }
 )

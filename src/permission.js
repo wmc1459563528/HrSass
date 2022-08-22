@@ -38,8 +38,8 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else { // 有身份 & 去其它页面
       if (!store.state.user.userInfo.userId) {
-        const res = await store.dispatch('user/getUserInfo')
-        console.log(res)
+        await store.dispatch('user/getUserInfo')
+        // console.log(res)
       }
       next()// 直接放行
     }
