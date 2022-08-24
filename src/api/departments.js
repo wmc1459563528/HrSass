@@ -25,3 +25,38 @@ export const reqDelDepartment = (id) => {
     method: 'delete'
   })
 }
+/**
+ * 新增子部门
+ * @param {object} data {pid,code,introduce,manager,name}
+ * @returns
+ */
+export const reqAddDepartment = (data) => {
+  return http({
+    url: '/company/department',
+    method: 'post',
+    data
+  })
+}
+/**
+ * 根据部门ID修改部门详情
+ * @param {string} id
+ * @returns
+ */
+export const reqEditDepartment = (id) => {
+  return http({
+    url: `/company/department/${id}`,
+    method: 'get'
+  })
+}
+/**
+ * 根据id修改部门详情
+ * @param {string} form {id,...}
+ * @returns
+ */
+export const reqUpdateDepartDetail = (form) => {
+  return http({
+    method: 'put',
+    url: `/company/department/${form.id}`,
+    data: form
+  })
+}

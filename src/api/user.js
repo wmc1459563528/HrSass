@@ -34,3 +34,14 @@ export const reqGetUserInfo = (id) => {
     method: 'get'
   })
 }
+
+/**
+ * 获取员工简单列表
+ * @returns
+ */
+export const reqGetSimpleUserList = () => {
+  return http({
+    url: '/sys/user/simple',
+    method: 'get'
+  })
+}

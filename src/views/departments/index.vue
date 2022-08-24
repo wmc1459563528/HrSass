@@ -4,26 +4,40 @@
       <!-- 卡片 -->
       <el-card class="tree-card">
         <!-- 头部 -->
-        <tree-row :node-data="company" :root="true" />
+        <tree-row
+          :node-data="company"
+          :root="true"
+          @add-depts="handleAddDept"
+        />
         <!-- 树型数组 -->
         <el-tree :data="departs" :props="{ label: 'name' }" default-expand-all>
           <!-- 作用域插槽: 自己自定义树形结构 -->
           <template #default="{ data }">
             <tree-row
               :node-data="data"
-              @add-depts="getAddDept"
+              @add-depts="handleAddDept"
               @del-depts="getDepartment"
+              @edit-depts="handleEditDept"
             />
           </template>
         </el-tree>
       </el-card>
 
       <!-- 添加子组件 -->
+      <!--
+         :is-show.sync
+         - 父组件已经放权让你可以以固定的方式去直接修改isShow属性的属性值
+         - 在子组件中一旦修改了isShow属性的属性值, 会同步影响到父组件中isShowAddDept属性的属性值
+
+         删除之前注册的自定义事件:
+          @closeDialog="handleCloceAddDept"
+       -->
       <add-dept
-        :isshow="isShowAddDept"
+        ref="addDept"
+        :is-show.sync="isShowAddDept"
         :depts-list="deptsList"
         :node-data="nodeData"
-        @CloseDept="handleCloceAddDept"
+        @addDept="getDepartment"
       />
     </div>
   </div>
@@ -65,18 +79,32 @@ export default {
       // console.log(companyName, depts)
       // 1.2 处理公司的名称
       this.company.name = companyName
+      // 1.4 在总公司下添加一个空id 方便添加一级标题
+      this.company.id = ''
       // 1.3 把对象数组转成树形数组
       this.departs = tranListToTreeData(depts, '')
       // 记录对象数组
       this.deptsList = depts
     },
-    handleCloceAddDept() {
-      this.$message.info('您已关闭窗口')
+    /*     handleCloceAddDept() {
+      // this.$message.info('您已关闭窗口')
       this.isShowAddDept = false
-    },
-    getAddDept(nodedata) {
+    }, */
+    // 添加子部门
+    handleAddDept(nodedata) {
       this.isShowAddDept = true
       this.nodeData = nodedata
+      // 第一种方法，利用ref refs来调用子组件方法
+      // this.$refs.addDept.getSimpleUserList()
+      this.$refs.addDept.dialogTitle = '添加部门'
+    },
+    // 编辑子部门
+    handleEditDept(nodedata) {
+      this.isShowAddDept = true
+      this.nodeData = nodedata
+      this.$refs.addDept.dialogTitle = '编辑部门'
+      // 调用子组件中的函数，进行回显操作
+      this.$refs.addDept.getDeptDetail(nodedata.id)
     }
   }
 }

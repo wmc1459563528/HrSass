@@ -51,9 +51,12 @@ export default {
     handleCommand(flag) {
       if (flag === 'add') {
         // this.$message.success('添加成功')
+        // 向父组件发送自定义事件并将数据回传给父组件
         this.$emit('add-depts', this.nodeData)
       } else if (flag === 'edit') {
-        this.$message.success('编辑成功')
+        // this.$message.success('编辑成功')
+        // 向父组件发送自定义事件并将数据回传给父组件
+        this.$emit('edit-depts', this.nodeData)
       } else {
         this.$confirm('此操作将永久删除该部门，是否继续？', '温馨提示').then(async() => {
           await reqDelDepartment(this.nodeData.id)
