@@ -56,12 +56,12 @@ export const constantRoutes = [
 // 5. 动态路由规则数组(里面的所有路由对象后期都要权限管理)
 export const asyncRoutes = [
   departmentsRouter,
+  settingRouter,
   approvalsRouter,
   employeesRouter,
   permissionRouter,
   attendancesRouter,
   salarysRouter,
-  settingRouter,
   socialRouter
 ]
 // 6. 调用函数, 创建一个全局的路由对象

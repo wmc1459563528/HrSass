@@ -2,7 +2,11 @@
   <div class="departments-container">
     <div class="app-container">
       <!-- 卡片 -->
-      <el-card class="tree-card">
+      <el-card
+        v-loading="loading"
+        class="tree-card"
+        element-loading-text="拼命加载中"
+      >
         <!-- 头部 -->
         <tree-row
           :node-data="company"
@@ -67,7 +71,8 @@ export default {
       // 添加子部门对应得父部门的数据
       nodeData: {},
       // 5. 部门完整的数据数组(对象数组)
-      deptsList: []
+      deptsList: [],
+      loading: false
     }
   },
   created() {
@@ -75,6 +80,8 @@ export default {
   },
   methods: {
     async getDepartment() {
+      // 该变加载状态
+      this.loading = true
       const { data: { companyName, depts }} = await reqGetDepartments()
       // console.log(companyName, depts)
       // 1.2 处理公司的名称
@@ -85,6 +92,8 @@ export default {
       this.departs = tranListToTreeData(depts, '')
       // 记录对象数组
       this.deptsList = depts
+      // 该变加载状态
+      this.loading = false
     },
     /*     handleCloceAddDept() {
       // this.$message.info('您已关闭窗口')
