@@ -37,6 +37,11 @@ import '@/permission'
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
 
+// 注册全局组件
+/* import PageTools from '@/components/PageTools'
+Vue.component('PageTools', PageTools) */
+import HrSassUI from '@/components'
+Vue.use(HrSassUI)
 // 11. 往原型对象上绑定全局方法
 // import http from './utils/request'
 // Vue.prototype.$http = http

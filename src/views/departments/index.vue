@@ -105,13 +105,13 @@ export default {
       this.nodeData = nodedata
       // 第一种方法，利用ref refs来调用子组件方法
       // this.$refs.addDept.getSimpleUserList()
-      this.$refs.addDept.dialogTitle = '添加部门'
+      // this.$refs.addDept.dialogTitle = '添加部门'
     },
     // 编辑子部门
     handleEditDept(nodedata) {
       this.isShowAddDept = true
       this.nodeData = nodedata
-      this.$refs.addDept.dialogTitle = '编辑部门'
+      // this.$refs.addDept.dialogTitle = '编辑部门'
       // 调用子组件中的函数，进行回显操作
       this.$refs.addDept.getDeptDetail(nodedata.id)
     }

@@ -1,6 +1,8 @@
 <template>
 
   <el-dialog
+    v-loading="loading"
+    element-loading-text="拼命加载中"
     :title="dialogTitle"
     :visible="isShow"
     @close="handleCloce"
@@ -158,7 +160,14 @@ export default {
 
       },
       userList: [],
-      dialogTitle: ''
+      // dialogTitle: '',
+      loading: false
+    }
+  },
+  computed: {
+    // 根据id来修改标题
+    dialogTitle() {
+      return this.form.id ? '编辑部门' : '新增子部门'
     }
   },
   methods: {
@@ -193,6 +202,7 @@ export default {
     },
     // 添加子部门
     handleAdd() {
+      this.loading = true
       this.$refs.form.validate(async(flag) => {
         // 校验不通过
         if (!flag) return
@@ -214,6 +224,7 @@ export default {
         // 通知父组件更新数据
         this.$emit('addDept')
       })
+      this.loading = false
     },
     // 根据部门ID修改部门详情
     async getDeptDetail(id) {
