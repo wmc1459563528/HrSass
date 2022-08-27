@@ -37,11 +37,6 @@ import '@/permission'
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
 
-// 注册全局组件
-/* import PageTools from '@/components/PageTools'
-Vue.component('PageTools', PageTools) */
-import HrSassUI from '@/components'
-Vue.use(HrSassUI)
 // 11. 往原型对象上绑定全局方法
 // import http from './utils/request'
 // Vue.prototype.$http = http
@@ -70,6 +65,20 @@ Object.keys(directives).forEach(item => {
   - 原因2: 数组有更多的内置方法, 对象相对较少
   todo 第二种写法的可扩展性会更强
 */
+// todo 12.注册全局组件
+/* import PageTools from '@/components/PageTools'
+Vue.component('PageTools', PageTools) */
+import HrSassUI from '@/components'
+Vue.use(HrSassUI)
+// todo 13. 注册全局过滤器
+/* import dayjs from 'dayjs'
+Vue.filter('formatData', value => {
+  return dayjs(value).format('YYYY年MM月DD日')
+}) */
+import * as filters from '@/filters'
+Object.keys(filters).forEach(item => {
+  Vue.filter(item, filters[item])
+})
 // 将App.vue根组件转换成DOM元素渲染到指定的挂载点(灰常重要)
 new Vue({
   el: '#app',

@@ -4,6 +4,12 @@
       <h2>
         首页
         <svg-icon icon-class="dashboard" />
+        <!-- 过滤器的使用 -->
+        <p>{{ price | fnName }}</p>
+        <p>{{ price1 | fnName }}</p>
+        <p>{{ price2 | fnName }}</p>
+        <p>{{ price3 | fnName }}</p>
+
       </h2>
     </div>
   </div>
@@ -14,6 +20,19 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
+  filters: {
+    fnName(value) {
+      return '￥' + value.toFixed(2)
+    }
+  },
+  data() {
+    return {
+      price: 100,
+      price1: 100.345,
+      price2: 100.23,
+      price3: 100.436325345
+    }
+  },
   computed: {
     ...mapGetters([
       'name'

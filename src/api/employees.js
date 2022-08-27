@@ -19,3 +19,26 @@ export const reqGetUserList = (page = 1, size = 5) => {
     }
   })
 }
+/**
+ * 删除员工
+ * @param {string} id 员工id
+ * @returns
+ */
+export function reqDelEmployee(id) {
+  return http({
+    method: 'delete',
+    url: `/sys/user/${id}`
+  })
+}
+/**
+ * 添加员工
+ * @param {object} form - 完整的员工信息对象
+ * @returns
+ */
+export const reqAddEmployee = (form) => {
+  return http({
+    method: 'post',
+    url: '/sys/user',
+    data: form
+  })
+}

@@ -10,7 +10,7 @@
         <template #right>
           <el-button type="danger" size="small">excel导出</el-button>
           <el-button type="success" size="small">excel导入</el-button>
-          <el-button type="primary" size="small">新增员工</el-button>
+          <el-button type="primary" size="small" @click="showNewDialog = true">新增员工</el-button>
         </template>
       </page-tools>
       <el-card v-loading="loading" element-loading-text="拼命加载中" style="margin-top: 10px;">
@@ -55,14 +55,18 @@
             label="入职时间"
             prop="timeOfEntry"
             sortable
-          />
+          >
+            <template #default="{row}">
+              {{ row.timeOfEntry | formatData }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="操作"
             sortable
             fixed="right"
             width="280"
           >
-            <template>
+            <template #default="{row}">
               <el-button
                 type="text"
                 size="small"
@@ -86,6 +90,7 @@
               <el-button
                 type="text"
                 size="small"
+                @click="handleDelUserInfo(row.id)"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -103,14 +108,25 @@
           />
         </div>
       </el-card>
+      <!-- 利用sync放权给子组件修改内容 -->
+      <add-employee
+        :show-dialog.sync="showNewDialog"
+        :add-user="getUserList"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { reqGetUserList } from '@/api/employees'
+import { reqDelEmployee, reqGetUserList } from '@/api/employees'
+import employees from '@/constant/employees'
+// 引入添加弹层组件
+import AddEmployee from './components/AddEmployee.vue'
 export default {
   name: 'Employees',
+  components: {
+    AddEmployee
+  },
   data() {
     return {
       // 分页相关
@@ -119,7 +135,9 @@ export default {
       size: 5,
       total: 0,
       // 加载中
-      loading: false
+      loading: false,
+      // 添加员工的弹层
+      showNewDialog: false
     }
   },
   created() {
@@ -154,7 +172,28 @@ export default {
     // 5.格式化单元格内容
     formatterEmployment(row, column, cellValue, index) {
       // console.log(row, column, cellValue, index)
-      return cellValue === 1 ? '正式员工' : '临时员工'
+      // todo 这种写法太局限，可以用枚举解决
+      // return cellValue === 1 ? '正式员工' : '临时员工'
+      const { hireType } = employees
+      // console.log(hireType)
+      // ! 后端接口给回来的cellValue的值得类型有number和string类型两种 需要特殊处理
+      const res = hireType.find(item => item.id === +cellValue)
+      return res ? res.value : '未知工种'
+    },
+    // 6.删除当前员工信息
+    handleDelUserInfo(id) {
+      this.$confirm('确定删除当前项吗？此操作将不可逆！', '温馨提示', { type: 'warning' }).then(async() => {
+        // 发送请求
+        await reqDelEmployee(id)
+        // ! 特殊处理：如果为当前页的第一项，且数组长度为1则需要当前页-1
+        if (this.list.length === 1 && this.page > 1) this.page--
+        // 提示用户删除成功
+        this.$message.success('删除成功~')
+        // 重新拉取数据
+        this.getUserList()
+      }).catch(err => {
+        this.$message.info(err)
+      })
     }
   }
 }
