@@ -30,7 +30,19 @@ export const constantRoutes = [
     hidden: true,
     meta: { title: '首页', icon: 'dashboard' }
   },
-
+  // 导入Excel组件路径
+  {
+    path: '/import',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '',
+        name: 'import',
+        component: () => import('@/views/import/index')
+      }
+    ]
+  },
   {
     path: '/404',
     component: () => import('@/views/404'),

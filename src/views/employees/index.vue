@@ -8,12 +8,25 @@
         </template>
         <!-- 右边插槽 -->
         <template #right>
-          <el-button type="danger" size="small">excel导出</el-button>
-          <el-button type="success" size="small">excel导入</el-button>
-          <el-button type="primary" size="small" @click="showNewDialog = true">新增员工</el-button>
+          <el-button
+            type="danger"
+            size="small"
+            @click="handleExport"
+          >excel导出</el-button>
+          <el-button
+            type="success"
+            size="small"
+            @click="$router.push('/import?type=emp')"
+          >excel导入</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="showNewDialog = true"
+          >新增员工</el-button>
         </template>
       </page-tools>
       <el-card v-loading="loading" element-loading-text="拼命加载中" style="margin-top: 10px;">
+        <!-- 下方表格 -->
         <el-table
           :data="list"
           border
@@ -122,6 +135,7 @@ import { reqDelEmployee, reqGetUserList } from '@/api/employees'
 import employees from '@/constant/employees'
 // 引入添加弹层组件
 import AddEmployee from './components/AddEmployee.vue'
+import dayjs from 'dayjs'
 export default {
   name: 'Employees',
   components: {
@@ -194,6 +208,75 @@ export default {
       }).catch(err => {
         this.$message.info(err)
       })
+    },
+    // 7. 点击下载excel文件
+    async handleExport() {
+      // 7.1 获取所有的员工数据 将总条数传给后端，拿到所有员工数据
+      const { data: { rows }} = await reqGetUserList(1, this.total)
+      // console.log(rows)
+      // 表头数组
+      const headersArr = ['姓名', '手机号', '入职日期', '聘用形式', '转正日期', '工号', '部门']
+      // 中英转换数组
+      const headersRelations = {
+        '姓名': 'username',
+        '手机号': 'mobile',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      const resArr = this.formatFn(rows, headersArr, headersRelations)
+      // console.log(resArr)
+      import('@/vendor/Export2Excel').then(excel => {
+        // 2. 导出excel
+        excel.export_json_to_excel({
+          header: headersArr, // 表头
+          data: resArr, // 表内容
+          filename: '新建Microsoft Excel 工作表', // 文件名称
+          autoWidth: true, // 是否定宽
+          bookType: 'xlsx' // 文件类型
+        })
+        this.$message.success('导出成功')
+      })
+    },
+    // 8. 把对象数组转成二维数组
+    formatFn(rows, headersArr, headersRelations) {
+      // 一维数组
+      const oneArr = []
+
+      // 遍历后端数组
+      rows.forEach(item => {
+        // 二维数组
+        const twoArr = []
+        // console.log(item)
+        // 遍历表头数组，将表头的顺序按照二维数组的顺序
+        headersArr.forEach(key => {
+          // 从中英文对照表中取出英文键
+          const englishKey = headersRelations[key]
+          // console.log(englishKey)
+          // 根据英文键从对象中取出对应的值
+          let value = item[englishKey]
+          // todo 如果是单个添加 则时间会不统一，设置统一的时间格式
+          if (['timeOfEntry', 'correctionTime'].includes(englishKey)) {
+            value = dayjs(value).format('YYYY年MM月DD日')
+          }
+          // todo 利用枚举来将后端的数据改为工种
+          if (['formOfEmployment'].includes(englishKey)) {
+            const { hireType } = employees
+            // console.log(hireType)
+            const res = hireType.find(item => item.id === +value)
+            value = res ? res.value : '未知工种'
+          }
+          // console.log(value)
+          // 将值装入到二维数组
+          twoArr.push(value)
+        })
+        // 将二维数组添加到一维数组
+        oneArr.push(twoArr)
+      })
+      // console.log()
+      return oneArr
     }
   }
 }

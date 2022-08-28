@@ -24,7 +24,7 @@ export const reqGetUserList = (page = 1, size = 5) => {
  * @param {string} id 员工id
  * @returns
  */
-export function reqDelEmployee(id) {
+export const reqDelEmployee = id => {
   return http({
     method: 'delete',
     url: `/sys/user/${id}`
@@ -35,10 +35,23 @@ export function reqDelEmployee(id) {
  * @param {object} form - 完整的员工信息对象
  * @returns
  */
-export const reqAddEmployee = (form) => {
+export const reqAddEmployee = form => {
   return http({
     method: 'post',
     url: '/sys/user',
     data: form
+  })
+}
+
+/**
+ * 批量添加员工
+ * @param {Array} data [{username: xxx, mobile: xxx, ...}, {}, {}, ...]
+ * @returns
+ */
+export const reqAddEmployeeBatch = data => {
+  return http({
+    method: 'post',
+    url: '/sys/user/batch',
+    data
   })
 }
