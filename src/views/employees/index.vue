@@ -83,6 +83,7 @@
               <el-button
                 type="text"
                 size="small"
+                @click="$router.push(`/employees/detail/${row.id}`)"
               >查看</el-button>
               <el-button
                 type="text"
@@ -214,6 +215,10 @@ export default {
       // 7.1 获取所有的员工数据 将总条数传给后端，拿到所有员工数据
       const { data: { rows }} = await reqGetUserList(1, this.total)
       // console.log(rows)
+      // 多表头
+      const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+      // 合并单元格
+      const merges = ['A1:A2', 'B1:F1', 'G1:G2']
       // 表头数组
       const headersArr = ['姓名', '手机号', '入职日期', '聘用形式', '转正日期', '工号', '部门']
       // 中英转换数组
@@ -233,9 +238,11 @@ export default {
         excel.export_json_to_excel({
           header: headersArr, // 表头
           data: resArr, // 表内容
-          filename: '新建Microsoft Excel 工作表', // 文件名称
+          filename: '员工表', // 文件名称
           autoWidth: true, // 是否定宽
-          bookType: 'xlsx' // 文件类型
+          bookType: 'xlsx', // 文件类型
+          multiHeader, // 多表头
+          merges // 合并单元格
         })
         this.$message.success('导出成功')
       })
@@ -262,10 +269,9 @@ export default {
             value = dayjs(value).format('YYYY年MM月DD日')
           }
           // todo 利用枚举来将后端的数据改为工种
-          if (['formOfEmployment'].includes(englishKey)) {
+          if (englishKey === 'formOfEmployment') {
             const { hireType } = employees
-            // console.log(hireType)
-            const res = hireType.find(item => item.id === +value)
+            const res = hireType.find(val => val.id === +value)
             value = res ? res.value : '未知工种'
           }
           // console.log(value)

@@ -1,3 +1,7 @@
+/**
+  该文件封装了用户操作的所有接口函数
+ */
+
 import http from '@/utils/request'
 
 /**
@@ -7,12 +11,13 @@ import http from '@/utils/request'
  */
 export function reqLogin(data) {
   return http({
-    // url: 'http://localhost:8889/api/sys/login',
+    // url: 'http://localhost:8888/api/sys/login',
     url: '/sys/login',
     method: 'post',
     data
   })
 }
+
 /**
  * 获取用户基本资料
  * @returns
@@ -23,8 +28,9 @@ export const reqGetProfile = () => {
     method: 'post'
   })
 }
+
 /**
- * 用于获取基本信息(带头像)  需要传id
+ * 根据用户id获取用户的基本信息
  * @param {*} id
  * @returns
  */
@@ -37,7 +43,6 @@ export const reqGetUserInfo = (id) => {
 
 /**
  * 获取员工简单列表
- * @returns
  */
 export const reqGetSimpleUserList = () => {
   return http({
