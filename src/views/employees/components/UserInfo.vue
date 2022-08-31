@@ -57,7 +57,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <upload-image ref="staffPhoto" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +90,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <upload-image ref="userPhoto" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -377,21 +378,79 @@ export default {
     async getUserDetailById() {
       const { data } = await reqGetUserInfo(this.userId)
       this.userInfo = data
+      // 用户头像回显
+      // 如果后台有图片则替换成后台的图片
+      if (data.staffPhoto.trim()) {
+        // 将图片替换成新头像
+        this.$refs.staffPhoto.fileList = [{ url: data.staffPhoto }]
+      }
     },
 
     // 2. 获取员工的信息详情
     async getPersonalDetail() {
       const { data } = await reqGetPersonalDetail(this.userId) // 获取员工数据
       this.formData = data
+      // 员工照片回显
+      if (data.staffPhoto.trim()) {
+        this.$refs.userPhoto.fileList = [
+          { url: data.staffPhoto }
+        ]
+      }
     },
 
     // --------------------
+    // 个人详情
     async saveUser() {
-      await reqSaveUserDetailById(this.userInfo)
+      // 获取上传到腾讯云的图片路径
+      // 3.1 获取上传组件中图片的url地址
+      // 方式一:
+      const fileObj = this.$refs.staffPhoto.fileList[0]
+      // 兼容性处理(如果对象为undefined, 调用属性会报错)
+      const fileUrl = fileObj && fileObj.url
+
+      // 方式二:
+      // 友好点语法
+      // const fileUrl = this.$refs.staffPhoto.fileList[0]?.url
+      // console.log(fileUrl)
+      // 3.3 如果上传组件还在上传文件, 不能发起提交请求
+      const isUploadAll = this.$refs.staffPhoto.isUploadAll
+      if (!isUploadAll) {
+        this.$message.warning('头像正在上传中，请等待上传完成之后提交')
+        return
+      }
+      if (fileUrl) {
+        await reqSaveUserDetailById({
+        // todo 将用户信息展开并将staffPhoto替换成最新上传的图片
+          ...this.userInfo,
+          staffPhoto: fileUrl
+        })
+      } else {
+        await reqSaveUserDetailById({
+        // todo 如果为undefined，则staffPhoto为空
+          ...this.userInfo,
+          staffPhoto: ''
+        })
+      }
       this.$message.success('保存成功')
     },
+    // 4. 保存个人信息
     async savePersonal() {
-      await reqUpdatePersonal({ ...this.formData, userId: this.userId })
+      // 4.1 获取上传组件中图片的url地址
+      const fileUrl = this.$refs.userPhoto.fileList[0]?.url
+
+      // 4.2 如果没有上传照片, 则不能更新
+      if (!fileUrl) {
+        this.$message.warning('请上传图片后重试')
+        return
+      }
+      // 4.3 如果上传组件还在上传文件, 不能发起提交请求
+      const isUploadAll = this.$refs.userPhoto.isUploadAll
+      if (!isUploadAll) {
+        this.$message.warning('头像正在上传中，请等待上传完成之后提交')
+        return
+      }
+      // 4.4 发起请求
+      await reqUpdatePersonal({ ...this.formData, userId: this.userId, staffPhoto: fileUrl })
       this.$message.success('保存成功')
     }
   }
