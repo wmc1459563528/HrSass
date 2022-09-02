@@ -117,8 +117,8 @@ export function param2Obj(url) {
 }
 /**
  * 把列表数据数组转成树型数组
- * @param {*} list 列表数据数组
- * @param {*} pid  标记(要转成的层级)
+ * @param {Array<string>} list 列表数据数组
+ * @param {string} pid  标记(要转成的层级)
  * @returns
  */
 export function tranListToTreeData(list, pid) {

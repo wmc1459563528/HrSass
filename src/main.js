@@ -79,6 +79,9 @@ import * as filters from '@/filters'
 Object.keys(filters).forEach(item => {
   Vue.filter(item, filters[item])
 })
+// todo 14.注册打印插件
+import Print from 'vue-print-nb'
+Vue.use(Print)
 // 将App.vue根组件转换成DOM元素渲染到指定的挂载点(灰常重要)
 new Vue({
   el: '#app',

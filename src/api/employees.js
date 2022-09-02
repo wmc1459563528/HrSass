@@ -116,3 +116,19 @@ export const reqUpdateJob = (data) => {
     data
   })
 }
+/**
+ * 给员工分配角色
+ * @param { string } id 员工的id
+ * @param { array } roleIds 角色id数组
+ * @returns
+ */
+export const reqAssignRoles = (id, roleIds) => {
+  return http({
+    method: 'put',
+    url: `/sys/user/assignRoles`,
+    data: {
+      id,
+      roleIds
+    }
+  })
+}

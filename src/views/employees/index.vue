@@ -44,6 +44,20 @@
             sortable
           />
           <el-table-column
+            label="员工头像"
+            sortable
+          >
+            <template #default="{row}">
+              <img
+                v-imgerror="errorImg"
+                class="staff-photo"
+                :src="row.staffPhoto || defaultStaff"
+                alt=""
+                @click="handleStaffClick"
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
             label="手机号"
             prop="mobile"
             sortable
@@ -97,9 +111,11 @@
                 type="text"
                 size="small"
               >离职</el-button>
+              <!-- 点击角色弹窗 -->
               <el-button
                 type="text"
                 size="small"
+                @click="handleAssignRole(row.id)"
               >角色</el-button>
               <el-button
                 type="text"
@@ -127,20 +143,43 @@
         :show-dialog.sync="showNewDialog"
         :add-user="getUserList"
       />
+      <!-- 二维码展示弹窗 -->
+      <el-dialog
+        width="250px"
+        style="taxt-alin:center;"
+        title="扫码看图片"
+        :visible.sync="showQrcodeDialog"
+      >
+        <canvas ref="qrcodeCanvas" />
+      </el-dialog>
+      <assign-role
+        :user-id="userId"
+        :show-role-dialog.sync="showRoleDialog"
+      />
     </div>
   </div>
 </template>
 
 <script>
+// 引入接口文件
 import { reqDelEmployee, reqGetUserList } from '@/api/employees'
+// 引入公共组件
 import employees from '@/constant/employees'
+import errorImg from '@/assets/common/head.jpg'
+import bigUserHeader from '@/assets/common/bigUserHeader.png'
 // 引入添加弹层组件
 import AddEmployee from './components/AddEmployee.vue'
+import AssignRole from './components/AssignRole.vue'
+// 引入三方组件
 import dayjs from 'dayjs'
+// 引入二维码的三方库
+import QRCode from 'qrcode'
+
 export default {
   name: 'Employees',
   components: {
-    AddEmployee
+    AddEmployee,
+    AssignRole
   },
   data() {
     return {
@@ -152,7 +191,17 @@ export default {
       // 加载中
       loading: false,
       // 添加员工的弹层
-      showNewDialog: false
+      showNewDialog: false,
+      // 默认头像
+      defaultStaff: bigUserHeader,
+      // 头像错误是展示的头像
+      errorImg,
+      // 二维码弹窗的显示/隐藏
+      showQrcodeDialog: false,
+      // 10. 角色弹窗的显示/隐藏
+      showRoleDialog: false,
+      // 11.需要传递的id
+      userId: ''
     }
   },
   created() {
@@ -283,11 +332,32 @@ export default {
       })
       // console.log()
       return oneArr
+    },
+    // 9.点击图片展示二维码
+    handleStaffClick(e) {
+      // 二维码弹窗的显示 / 隐藏
+      this.showQrcodeDialog = true
+      // console.log(e.target.src)
+      this.$nextTick(() => {
+        QRCode.toCanvas(this.$refs.qrcodeCanvas, e.target.src)
+      })
+    },
+    // 10. 点击分配角色操作
+    handleAssignRole(id) {
+      this.showRoleDialog = true
+      // console.log(id)
+      this.userId = id
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.employees-container {
+  .staff-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+  }
+}
 </style>
