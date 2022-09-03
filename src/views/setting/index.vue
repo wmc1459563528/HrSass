@@ -16,13 +16,17 @@
               <el-table-column label="操作" width="300" fixed="right">
                 <template #default="{row}">
                   <el-button
+                    size="mini"
                     type="success"
+                    @click="handleAssignRole(row.id)"
                   >分配权限</el-button>
                   <el-button
+                    size="mini"
                     type="primary"
                     @click="handelEditRole(row.id)"
                   >编辑</el-button>
                   <el-button
+                    size="mini"
                     type="danger"
                     @click="handleDelRole(row.id)"
                   >删除</el-button>
@@ -77,6 +81,34 @@
           </el-tab-pane>
         </el-tabs>
       </el-card>
+      <!-- 分配权限的弹层 -->
+      <el-dialog
+
+        title="分配权限"
+        :visible="showAssignDialog"
+        @close="closeAssignDialog"
+      >
+        <!--
+          default-expand-all 是否默认展开所有节点
+          show-checkbox 节点是否可被选择
+          check-strictly 如果为true, 父子不关联; 如果为false, 父子关联
+       -->
+        <el-tree
+          ref="tree"
+          v-loading="showLoading"
+          node-key="id"
+          element-loading-text="拼命加载中"
+          default-expand-all
+          show-checkbox
+          check-strictly
+          :data="permissionTreeList"
+          :props="{label:'name'}"
+        />
+        <template #footer>
+          <el-button @click="closeAssignDialog">取消</el-button>
+          <el-button type="primary" @click="handleAssignRoleSubmit">确定</el-button>
+        </template>
+      </el-dialog>
       <!-- 对话框 -->
       <el-dialog
         :title="diaLogTitle"
@@ -102,8 +134,11 @@
 </template>
 
 <script>
-import { reqGetRoleList, reqAddRole, reqDelRole, reqGetRoleDetail, reqUpdateRole } from '@/api/role'
+import { reqGetRoleList, reqAddRole, reqDelRole, reqGetRoleDetail, reqUpdateRole, reqAssignPrem } from '@/api/role'
 import { reqSelectCompany } from '@/api/company'
+import { reqGetPermissionList } from '@/api/permisson'
+import { tranListToTreeData } from '@/utils'
+
 import { mapState } from 'vuex'
 export default {
   name: 'Setting',
@@ -136,8 +171,15 @@ export default {
         companyAddress: '',
         mailbox: '',
         remarks: ''
-      }
-
+      },
+      // 分配权限的显示与隐藏
+      showAssignDialog: false,
+      // 存放树形数组
+      permissionTreeList: [],
+      // 加载状态
+      showLoading: false,
+      // 当前权限的ID
+      roleId: ''
     }
   },
   computed: {
@@ -225,9 +267,7 @@ export default {
         }
         // 重新拉取数据
         this.getRoleList()
-      }).catch((err) => {
-        this.$message.error(err)
-      })
+      }).catch(err => this.$message.warning(err))
     },
     // 编辑数据回显
     async handelEditRole(id) {
@@ -244,6 +284,38 @@ export default {
       // 从仓库中获取企业的ID
       const { data: res } = await reqSelectCompany(this.userInfo.companyId)
       this.companyForm = res
+    },
+    // 关闭分配权限弹窗
+    closeAssignDialog() {
+      this.showAssignDialog = false
+      // 清空上一个的状态
+      this.$refs.tree.setCheckedKeys([])
+    },
+    // 分配权限按钮
+    async handleAssignRole(id) {
+      this.showLoading = true
+      // console.log(id)
+      // 显示弹窗
+      this.showAssignDialog = true
+      const { data: res } = await reqGetPermissionList()
+      this.permissionTreeList = tranListToTreeData(res, '0')
+      // 获取角色之前的权限(就是获取角色详情那个接口)
+      const { data: { permIds }} = await reqGetRoleDetail(id)
+      // console.log(permIds)
+      // 设置树形结构选中(配合node-key)
+      this.$refs.tree.setCheckedKeys(permIds)
+      this.showLoading = false
+      // 将id赋值给data内，供添加权限按钮调用
+      this.roleId = id
+    },
+    // 添加权限按钮
+    async handleAssignRoleSubmit() {
+      // this.$refs.tree.getCheckedKeys() 获取当前id的数组列表
+      await reqAssignPrem(this.roleId, this.$refs.tree.getCheckedKeys())
+      // 提示用户
+      this.$message.success('分配权限成功')
+      // 关闭窗口
+      this.closeAssignDialog()
     }
   }
 

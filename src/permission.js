@@ -19,7 +19,7 @@
         - 访问是其它页面, 拦截去登录页面
 */
 // 1. 引入
-import router from '@/router'
+import router, { asyncRoutes } from '@/router'
 import store from '@/store'
 // 引入进度条插件
 import NProgress from 'nprogress' // 引入进度条对象
@@ -40,6 +40,20 @@ router.beforeEach(async(to, from, next) => {
       if (!store.state.user.userInfo.userId) {
         await store.dispatch('user/getUserInfo')
         // console.log(res)
+        // 在这里做动态路由规则
+        /*
+          addRoutes 的作用:
+            - 动态的在原有的路由规则基础上, 新增路由
+          语法:
+            - 给已有的路由实例动态添加路由规则
+            router.addRoutes([{ path: xx, component: xxx, name: xxx }, ...])
+         */
+        // 添加动态路由（异步操作，为了避免出现访问路径丢失问题，重新再进入一次页面）
+        router.addRoutes(asyncRoutes)
+        next({
+          ...to, // 重新去一次原来的地方
+          replace: true // 解决跳转历史重复问题
+        })
       }
       next()// 直接放行
     }

@@ -93,9 +93,9 @@ export default {
           password: this.UserForm.newPassword || this.UserForm.password
         })
         // 提示用户
-        this.$message.success('更新成功~')
+        this.$message.success('更新成功')
         // 跳转到员工页
-        this.$router.push('/employees')
+        // this.$router.push('/employees')
       })
     }
   }

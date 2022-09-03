@@ -55,9 +55,9 @@ export default {
     handleOpenDialog() {
       this.loading = true
       // 获取角色列表
-      this.getRoleList()
+      // this.getRoleList()
       // 获取当前员工角色信息用于回显
-      this.getUserRoles()
+      // this.getUserRoles()
       Promise.all([this.getRoleList(), this.getUserRoles()]).then(() => {
         this.loading = false
       })

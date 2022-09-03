@@ -60,10 +60,10 @@ export const constantRoutes = [
       // 元信息对象：配置一些额外的数据
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
+  }
 
   // 当所有的规则都匹配不上, 统一走404(都要放在规则数组的尾部)
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 // 5. 动态路由规则数组(里面的所有路由对象后期都要权限管理)
 export const asyncRoutes = [
@@ -82,8 +82,9 @@ const createRouter = () => new Router({
   // 在页面切换时, 进入到新的页面时, 都会滚动到页面的顶部 scorllTop = 0
   scrollBehavior: () => ({ y: 0 }),
   routes: [
-    ...constantRoutes,
-    ...asyncRoutes
+    ...constantRoutes
+    // 动态路由需要做权限管理，这里不做引入，在全局前置守卫处理
+    // ...asyncRoutes
   ] // 路由规则对象数组
 })
 const router = createRouter()

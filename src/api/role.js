@@ -65,4 +65,19 @@ export const reqUpdateRole = (form) => {
     data: form
   })
 }
-
+/**
+ * 给角色分配权限
+ * @param {string} id 角色ID
+ * @param {array} permIds 该角色拥有的权限id数组
+ * @returns
+ */
+export const reqAssignPrem = (id, permIds) => {
+  return http({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data: {
+      id,
+      permIds
+    }
+  })
+}
