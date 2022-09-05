@@ -3,6 +3,8 @@ import { reqGetProfile, reqGetUserInfo, reqLogin } from '@/api/user'
 // 引入js-cookie来操作token
 import { setToken, getToken, removeToken } from '@/utils/auth'
 
+// 引入重置路由函数
+import { resetRouter } from '@/router'
 const state = () => ({
   // 一运行要从本地获取下存储的token
   token: getToken() || '',
@@ -56,19 +58,23 @@ const actions = {
   }, */
   // 2. 获取用户信息
   async getUserInfo(ctx) {
-    const res = await reqGetProfile()
-    // console.log(res)
-    // 获取用户信息
-    const res2 = await reqGetUserInfo(res.data.userId)
-    // 合成完整的用户信息对象
-    const userObj = { ...res.data, ...res2.data }
+    // 2.1 获取用户基本资料
+    const { data: data1 } = await reqGetProfile()
+    // 2.2 获取用户基本信息
+    const { data: data2 } = await reqGetUserInfo(data1.userId)
+    // 2.3 合成完整的用户信息对象
+    const userObj = { ...data1, ...data2 }
+    // 2.4 存储到仓库中
     ctx.commit('setUserInfo', userObj)
-    return res
+    // 2.5 把结果返回给外部
+    return userObj
   },
   // 3. 退出登录
   loginOut(ctx) {
     ctx.commit('removeToken')
     ctx.commit('removeUserInfo')
+    // 退出时重置路由
+    resetRouter()
   }
 }
 

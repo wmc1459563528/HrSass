@@ -8,19 +8,26 @@
         </template>
         <!-- 右边插槽 -->
         <template #right>
+          <!--
+            :disabled="!handleBtnRole('POINT_USER_EXPORT')"
+            如果有POINT_USER_EXPORT，则取反，让显示出来
+           -->
           <el-button
             type="danger"
             size="small"
+            :disabled="!handleBtnRole('POINT_USER_EXPORT')"
             @click="handleExport"
           >excel导出</el-button>
           <el-button
             type="success"
             size="small"
+            :disabled="!handleBtnRole('POINT_USER_IMPORT')"
             @click="$router.push('/import?type=emp')"
           >excel导入</el-button>
           <el-button
             type="primary"
             size="small"
+            :disabled="!handleBtnRole('POINT_USER_ADD')"
             @click="showNewDialog = true"
           >新增员工</el-button>
         </template>
@@ -97,6 +104,7 @@
               <el-button
                 type="text"
                 size="small"
+                :disabled="!handleBtnRole('POINT_USER_EDIT')"
                 @click="$router.push(`/employees/detail/${row.id}`)"
               >查看</el-button>
               <el-button
@@ -120,6 +128,7 @@
               <el-button
                 type="text"
                 size="small"
+                :disabled="!handleBtnRole('POINT_USER_DEL')"
                 @click="handleDelUserInfo(row.id)"
               >删除</el-button>
             </template>
@@ -347,6 +356,16 @@ export default {
       this.showRoleDialog = true
       // console.log(id)
       this.userId = id
+    },
+    // 11.按钮操作权
+    handleBtnRole(str) {
+      const roles = this.$store.getters.roles
+      // todo 判断roles内的point是否为str，如果是，则有该权限
+      if (roles) {
+        return roles.points.includes(str)
+      } else {
+        return false
+      }
     }
   }
 }

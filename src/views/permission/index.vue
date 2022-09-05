@@ -29,7 +29,7 @@
               <el-button
                 size="small"
                 type="text"
-                @click="handleAdd(1,row.id)"
+                @click="handleAdd(2,row.id)"
               >添加权限点</el-button>
               <el-button
                 size="small"
@@ -126,6 +126,7 @@ export default {
       // 显示弹窗
       this.showDialog = true
       // 将数据传给表单
+      // console.log(type, pid)
       this.formData.type = type
       this.formData.pid = pid
     },

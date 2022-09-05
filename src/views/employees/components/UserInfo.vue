@@ -432,6 +432,8 @@ export default {
         })
       }
       this.$message.success('保存成功')
+      // 刷新页面，更新右上角头像
+      this.$router.go(0)
     },
     // 4. 保存个人信息
     async savePersonal() {

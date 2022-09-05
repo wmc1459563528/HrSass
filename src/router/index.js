@@ -78,7 +78,7 @@ export const asyncRoutes = [
 ]
 // 6. 调用函数, 创建一个全局的路由对象
 const createRouter = () => new Router({
-  mode: 'hash', // 配置路由模式
+  mode: 'history', // 配置路由模式
   // 在页面切换时, 进入到新的页面时, 都会滚动到页面的顶部 scorllTop = 0
   scrollBehavior: () => ({ y: 0 }),
   routes: [
@@ -92,7 +92,7 @@ const router = createRouter()
 // 7. 重置路由对象
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher // 重置路由
 }
 
 // 8. 导出路由对象

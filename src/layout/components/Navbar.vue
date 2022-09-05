@@ -12,6 +12,7 @@
     </div>
 
     <div class="right-menu">
+      <screen-full class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imgerror="defaultImage" :src="staffPhoto" class="user-avatar">
@@ -39,7 +40,7 @@
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 // 在webpack环境下, 必须引入然后再使用图片
-import errorImg from '@/assets/common/my.png'
+import errorImg from '@/assets/common/bigUserHeader.png'
 // const errorImg = require('@/assets/common/my.jpg')
 export default {
   components: {
@@ -48,9 +49,9 @@ export default {
   data() {
     return {
       // 1. 默认图片(当img标签的src属性加载失败的时候使用)
-      defaultImage: 'https://img0.baidu.com/it/u=974773250,3873960466&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=497' || errorImg,
+      // defaultImage: 'https://img0.baidu.com/it/u=974773250,3873960466&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=497',
       // 本地图片需要导入才会显示
-      // defaultImage: errorImg
+      defaultImage: errorImg,
       color: 'pink'
     }
   },
@@ -138,7 +139,8 @@ export default {
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
+      vertical-align: middle;
+      margin-right: 10px;
 
       &.hover-effect {
         cursor: pointer;

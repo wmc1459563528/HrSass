@@ -19,7 +19,7 @@
         - 访问是其它页面, 拦截去登录页面
 */
 // 1. 引入
-import router, { asyncRoutes } from '@/router'
+import router from '@/router'
 import store from '@/store'
 // 引入进度条插件
 import NProgress from 'nprogress' // 引入进度条对象
@@ -38,7 +38,9 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else { // 有身份 & 去其它页面
       if (!store.state.user.userInfo.userId) {
-        await store.dispatch('user/getUserInfo')
+        const res = await store.dispatch('user/getUserInfo')
+        // console.log(res.roles.menus)
+        const otherRoutes = await store.dispatch('permission/filterRouter', res.roles.menus)
         // console.log(res)
         // 在这里做动态路由规则
         /*
@@ -49,11 +51,17 @@ router.beforeEach(async(to, from, next) => {
             router.addRoutes([{ path: xx, component: xxx, name: xxx }, ...])
          */
         // 添加动态路由（异步操作，为了避免出现访问路径丢失问题，重新再进入一次页面）
-        router.addRoutes(asyncRoutes)
+        router.addRoutes([
+          ...otherRoutes,
+          // 最后放上404，访问不存在的页面时跳转到404
+          { path: '*', redirect: '/404', hidden: true }
+        ])
         next({
-          ...to, // 重新去一次原来的地方
-          replace: true // 解决跳转历史重复问题
+          ...to // 重新去一次原来的地方
+          // replace: true // 解决跳转历史重复问题
         })
+        router.replace(to.path) // 解决跳转历史重复问题
+        return
       }
       next()// 直接放行
     }

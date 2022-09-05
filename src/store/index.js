@@ -7,6 +7,8 @@ import getters from './getters'
 import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
+import permission from './modules/permission'
+
 // 4. 全局注册
 Vue.use(Vuex)
 // 5. 创建一个根仓库对象
@@ -15,7 +17,8 @@ const store = new Vuex.Store({
   modules: {
     app,
     settings,
-    user
+    user,
+    permission
   },
   // 5.2 配置全局的getters
   getters

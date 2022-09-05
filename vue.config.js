@@ -2,6 +2,33 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
+// -----------------拿进来的-------------------
+
+let externals = {}
+let cdn = { css: [], js: [] }
+const isProduction = process.env.NODE_ENV === 'production' // 判断是否是生产环境
+if (isProduction) {
+  externals = {
+    // key(要排除的包名), value(引入的CDN包的全局变量名)
+    'vue': 'Vue',
+    'element-ui': 'ELEMENT',
+    'xlsx': 'XLSX'
+  }
+  cdn = {
+    css: [
+      'https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.0/theme-chalk/index.css'
+    ],
+    js: [
+      'https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.js',
+      'https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.0/index.js',
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/jszip.min.js',
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js'
+    ]
+  }
+}
+
+// -----------------拿进来的-------------------
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -40,13 +67,10 @@ module.exports = {
     // 代理服务器
     proxy: {
       '/api': {
-        // 线上服务器
-        // target: 'http://ihrm-java.itheima.net'
-        // 本地服务器
-        // target: 'http://localhost:3000'
-        // 自己的服务器
-        target: 'http://43.142.93.33:3000/'
 
+        // target: 'http://ihrm-java.itheima.net' // 线上接口
+        // target: 'http://localhost:3000' // 本地接口
+        target: 'http://43.142.93.33:3000' // 线上服务器(自己)接口
       }
     }
   },
@@ -54,6 +78,8 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    // 打包时排除要打包的库
+    externals: externals,
     resolve: {
       alias: {
         '@': resolve('src')
@@ -71,6 +97,12 @@ module.exports = {
         include: 'initial'
       }
     ])
+
+    // 注入cdn变量 (打包时会执行)
+    config.plugin('html').tap(args => {
+      args[0].cdn = cdn // 配置cdn给插件
+      return args
+    })
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
