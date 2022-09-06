@@ -8,24 +8,36 @@
       >
         <el-tabs v-model="activeName">
           <el-tab-pane label="角色管理" name="role">
-            <el-button type="primary" icon="el-icon-plus" @click="isShowDiaLog = true">新增角色</el-button>
+            <el-button
+              :disabled="!handleBtnRole('POINT_SETTINGS_ADD')"
+              type="primary"
+              icon="el-icon-plus"
+              @click="isShowDiaLog = true"
+            >新增角色</el-button>
             <el-table :data="list">
               <el-table-column type="index" :index="indexFn" label="序号" width="100" />
               <el-table-column prop="name" label="角色名称" width="250" />
               <el-table-column prop="description" label="描述" />
-              <el-table-column label="操作" width="300" fixed="right">
+              <el-table-column
+                label="操作"
+                width="300"
+                fixed="right"
+              >
                 <template #default="{row}">
                   <el-button
+                    :disabled="!handleBtnRole('POINT_SETTINGS_ROLE')"
                     size="mini"
                     type="success"
                     @click="handleAssignRole(row.id)"
                   >分配权限</el-button>
                   <el-button
+                    :disabled="!handleBtnRole('POINT_SETTINGS_EDIT')"
                     size="mini"
                     type="primary"
                     @click="handelEditRole(row.id)"
                   >编辑</el-button>
                   <el-button
+                    :disabled="!handleBtnRole('POINT_SETTINGS_DEL')"
                     size="mini"
                     type="danger"
                     @click="handleDelRole(row.id)"
@@ -316,6 +328,15 @@ export default {
       this.$message.success('分配权限成功')
       // 关闭窗口
       this.closeAssignDialog()
+    },
+    // 按钮操作权
+    handleBtnRole(str) {
+      const roles = this.$store.getters.roles
+      if (roles) {
+        return roles.points.includes(str)
+      } else {
+        return false
+      }
     }
   }
 

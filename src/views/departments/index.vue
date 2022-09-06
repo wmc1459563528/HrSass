@@ -115,6 +115,7 @@ export default {
       // 调用子组件中的函数，进行回显操作
       this.$refs.addDept.getDeptDetail(nodedata.id)
     }
+
   }
 }
 </script>

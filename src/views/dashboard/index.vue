@@ -24,7 +24,15 @@
           <div slot="header" class="header">
             <span>工作日历</span>
           </div>
-        <!-- 放置日历组件 -->
+          <!-- 放置日历组件 -->
+          <el-calendar v-model="calendarValue">
+            <template #dateCell="{ data, date }">
+              <div class="date-content">
+                <span class="text">{{ data.day | formData }}</span>
+                <span v-if="isWeek(date)" class="rest">休</span>
+              </div>
+            </template>
+          </el-calendar>
         </el-card>
         <!-- 公告 -->
         <el-card class="box-card">
@@ -150,9 +158,18 @@ echarts.use([
 
 export default {
   name: 'Dashboard',
+  // 过滤器
+  filters: {
+    // 日期
+    formData(value) {
+      const day = value.split('-')[2]
+      return day.startsWith('0') ? day.slice(1) : day
+    }
+  },
   data() {
     return {
-      errorImg
+      errorImg,
+      calendarValue: new Date()
     }
   },
   computed: {
@@ -204,6 +221,16 @@ export default {
         }
       ]
     })
+  },
+  methods: {
+    isWeek(data) {
+      const weekDay = data.getDay()
+      if (weekDay === 0 || weekDay === 6) {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>
@@ -336,5 +363,45 @@ export default {
   .iconTechnology {
     background-position: -460px 0;
   }
+}
+
+// 日历组件样式
+::v-deep .el-calendar-day {
+  height:  auto;
+ }
+::v-deep .el-calendar-table__row td::v-deep .el-calendar-table tr td:first-child, ::v-deep .el-calendar-table__row td.prev{
+  border: none;
+ }
+.date-content {
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 14px;
+}
+.date-content .rest {
+  color: #fff;
+  border-radius: 50%;
+  background: rgb(250, 124, 77);
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 10px;
+}
+.date-content .text{
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+ display: inline-block;
+
+}
+::v-deep .el-calendar-table td.is-selected .text{
+   background: #409eff;
+   color: #fff;
+   border-radius: 50%;
+ }
+::v-deep .el-calendar__header {
+   display: none
 }
 </style>

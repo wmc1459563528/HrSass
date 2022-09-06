@@ -3,7 +3,6 @@ const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
 // -----------------拿进来的-------------------
-
 let externals = {}
 let cdn = { css: [], js: [] }
 const isProduction = process.env.NODE_ENV === 'production' // 判断是否是生产环境
@@ -12,7 +11,8 @@ if (isProduction) {
     // key(要排除的包名), value(引入的CDN包的全局变量名)
     'vue': 'Vue',
     'element-ui': 'ELEMENT',
-    'xlsx': 'XLSX'
+    'xlsx': 'XLSX',
+    'cos-js-sdk-v5': 'COS'
   }
   cdn = {
     css: [
@@ -22,7 +22,8 @@ if (isProduction) {
       'https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.js',
       'https://cdn.bootcdn.net/ajax/libs/element-ui/2.14.0/index.js',
       'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/jszip.min.js',
-      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js'
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js',
+      'https://cdn.jsdelivr.net/npm/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js'
     ]
   }
 }

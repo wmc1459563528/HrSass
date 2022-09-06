@@ -55,7 +55,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
       // 元信息对象：配置一些额外的数据
       meta: { title: '首页', icon: 'dashboard' }
@@ -70,8 +70,8 @@ export const asyncRoutes = [
   departmentsRouter, // 组织架构
   settingRouter, // 设置
   employeesRouter, // 员工
-  approvalsRouter, // 审批
   permissionRouter, // 权限管理
+  approvalsRouter, // 审批
   attendancesRouter, // 考勤
   salarysRouter, // 薪资
   socialRouter// 社保

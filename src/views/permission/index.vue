@@ -5,6 +5,7 @@
       <el-card>
         <div style="text-align: right; margin-bottom: 20px">
           <el-button
+            :disabled="!handleBtnRoles('POINT_PERMISSIONS_ADD')"
             type="primary"
             size="small"
             @click="handleAdd(1,'0')"
@@ -27,16 +28,19 @@
           <el-table-column label="操作">
             <template #default="{row}">
               <el-button
+                :disabled="!handleBtnRoles('POINT_PERMISSIONS_ADD')"
                 size="small"
                 type="text"
                 @click="handleAdd(2,row.id)"
               >添加权限点</el-button>
               <el-button
+                :disabled="!handleBtnRoles('POINT_PERMISSIONS_EDIT')"
                 size="small"
                 type="text"
                 @click="handleEdit(row.id)"
               >查看</el-button>
               <el-button
+                :disabled="!handleBtnRoles('POINT_PERMISSIONS_DEL')"
                 size="small"
                 type="text"
                 @click="handleDle(row.id)"
@@ -180,6 +184,15 @@ export default {
       // console.log(res)
       this.formData = res
       this.showDialog = true
+    },
+    // 6.按钮操作权
+    handleBtnRoles(str) {
+      const roles = this.$store.getters.roles
+      if (roles) {
+        return roles.points.includes(str)
+      } else {
+        return false
+      }
     }
   }
 }

@@ -33,9 +33,12 @@ import '@/icons'
 import '@/permission'
 
 // 10. 全局注册ElementUI插件
+import i18n from '@/lang'
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
-Vue.use(ElementUI)
+Vue.use(ElementUI, {
+  i18n: (key, value) => i18n.t(key, value)
+})
 
 // 11. 往原型对象上绑定全局方法
 // import http from './utils/request'
@@ -87,5 +90,6 @@ new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

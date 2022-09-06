@@ -46,18 +46,38 @@ export default {
     }
 
   },
+  data() {
+    return {
+      role: 'POINT_DEPERTMENTS_DEL'
+    }
+  },
   methods: {
     // 处理用户点击
     handleCommand(flag) {
       if (flag === 'add') {
+        // 判断是否有此权限
+        if (!this.handleBtnRoles('POINT_DEPERTMENTS_ADD')) {
+          this.$message.warning('您暂无此权限，请联系管理员获取权限')
+          return
+        }
         // this.$message.success('添加成功')
         // 向父组件发送自定义事件并将数据回传给父组件
         this.$emit('add-depts', this.nodeData)
       } else if (flag === 'edit') {
+        // 判断是否有此权限
+        if (!this.handleBtnRoles('POINT_DEPERTMENTS_EDIT')) {
+          this.$message.warning('您暂无此权限，请联系管理员获取权限')
+          return
+        }
         // this.$message.success('编辑成功')
         // 向父组件发送自定义事件并将数据回传给父组件
         this.$emit('edit-depts', this.nodeData)
       } else {
+        // 判断是否有此权限
+        if (!this.handleBtnRoles('POINT_DEPERTMENTS_DEL')) {
+          this.$message.warning('您暂无此权限，请联系管理员获取权限')
+          return
+        }
         this.$confirm('此操作将永久删除该部门，是否继续？', '温馨提示').then(async() => {
           await reqDelDepartment(this.nodeData.id)
           this.$message.success('删除成功~')
@@ -65,6 +85,15 @@ export default {
         }).catch(() => {
           this.$message.info('取消删除~')
         })
+      }
+    },
+    // 按钮操作权
+    handleBtnRoles(str) {
+      const roles = this.$store.getters.roles
+      if (roles) {
+        return roles.points.includes(str)
+      } else {
+        return false
       }
     }
   }

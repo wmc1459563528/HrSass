@@ -7,28 +7,36 @@
     />
 
     <div class="app-breadcrumb">
-      江苏传智播客教育科技股份有限公司
-      <span class="breadBtn">体验版</span>
+      {{ $t('navbar.title') }}
+      <span class="breadBtn">{{ $t('navbar.version') }}</span>
     </div>
-
+    <!-- 导航右边 -->
     <div class="right-menu">
+      <!-- 全屏组件 -->
       <screen-full class="right-menu-item" />
+      <!-- 中英文切换 -->
+      <Language class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
+          <!-- 用户头像 -->
           <img v-imgerror="defaultImage" :src="staffPhoto" class="user-avatar">
-          <span class="name">{{ user }}</span>
+          <!-- 用户名 -->
+          <span class="name">{{ name }}</span>
           <i class="el-icon-caret-bottom" style="color: #fff" />
         </div>
-
+        <!--
+          站内跳转用router-link
+          站外跳转用a
+         -->
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> 首页 </el-dropdown-item>
+            <el-dropdown-item> {{ $t('navbar.dashboard') }}  </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://gitee.com/ALuckyBoy/hrsass">
-            <el-dropdown-item>项目地址</el-dropdown-item>
+            <el-dropdown-item>{{ $t('navbar.github') }} </el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="handleLogout">
-            <span v-color="color" style="display: block">退出登录</span>
+            <span v-color="color" style="display: block">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -56,10 +64,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'user', 'staffPhoto'])
-  },
-  created() {
-    // this.$store.dispatch('user/getUserInfo')
+    ...mapGetters(['sidebar', 'avatar', 'name', 'staffPhoto'])
   },
   methods: {
     toggleSideBar() {
